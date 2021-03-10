@@ -53,7 +53,7 @@ class Chat(models.Model):
 class User_detail(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     user_profile_image = models.ImageField(
-        upload_to='users_media', default='users_media/defaultuser.jpg', blank=True)
+        upload_to='users_media', default='', blank=True)
     following_clubs = models.ManyToManyField(
         Fanclub, blank=True, related_name='following_clubs')
     admin_clubs = models.ManyToManyField(
