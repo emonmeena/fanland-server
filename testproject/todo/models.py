@@ -4,9 +4,12 @@ from datetime import datetime
 
 
 class User(models.Model):
-    user_name = models.CharField(max_length=30)
+    user_name = models.CharField(max_length=30, unique=True)
     user_password = models.CharField(max_length=30)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ['user_name']
 
     def __str__(self):
         self.user_password
@@ -52,8 +55,9 @@ class Chat(models.Model):
 
 class User_detail(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_name = models.CharField(max_length=30)
     user_profile_image = models.ImageField(
-        upload_to='users_media', default='', blank=True)
+        upload_to='users_media', default='users_media/red_profile_pic.png', blank=True)
     following_clubs = models.ManyToManyField(
         Fanclub, blank=True, related_name='following_clubs')
     admin_clubs = models.ManyToManyField(
