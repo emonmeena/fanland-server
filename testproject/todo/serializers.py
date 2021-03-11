@@ -17,7 +17,7 @@ class FanclubSerializer(serializers.ModelSerializer):
 class BasicFanclubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fanclub
-        fields = ('name', 'des', 'image')
+        fields = ('id', 'name', 'des', 'image', 'creator')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -29,7 +29,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class BasicUserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_detail
-        fields = ('user_id', 'user_name', 'user_profile_image')
+        fields = ('id', 'user_id', 'user_name', 'user_profile_image')
 
 
 class ChatSerializer(serializers.ModelSerializer):

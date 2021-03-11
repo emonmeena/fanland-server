@@ -6,6 +6,7 @@ from rest_framework import status
 from .models import *
 from .serializers import *
 
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def user(request, username, userpassword):
     if request.method == 'GET':
@@ -57,14 +58,18 @@ def get_user_detail_datatype(request, userid, datatype):
         return Response(serializisedData.data[datatype])
 
 
-@api_view(['PUT'])
+@api_view(['GET', 'PUT'])
 def put_user_detail(request, userid):
     try:
         user_detail_data = User_detail.objects.get(user_id=userid)
     except User_detail.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'PUT':
+    if request.method == 'GET':
+        serializedData = UserDetailSerializer(user_detail_data)
+        return Response(serializedData.data)
+
+    elif request.method == 'PUT':
         serializer = UserDetailSerializer(
             user_detail_data, data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -120,6 +125,14 @@ def fanclub(request, clubid):
     elif request.method == 'DELETE':
         fanclub.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def fanclub_basic_creator(request, creator):
+    if request.method == 'GET':
+        fanclub = Fanclub.objects.filter(creator=creator)
+        serializisedData = BasicFanclubSerializer(fanclub, many=True)
+        return Response(serializisedData.data)
 
 
 @api_view(['GET'])
