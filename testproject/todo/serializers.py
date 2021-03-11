@@ -29,7 +29,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class BasicUserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_detail
-        fields = ('id', 'user_id', 'user_name', 'user_profile_image')
+        fields = ('user_id', 'user_name', 'user_profile_image', 'user_status')
 
 
 class ChatSerializer(serializers.ModelSerializer):

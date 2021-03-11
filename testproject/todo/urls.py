@@ -9,7 +9,7 @@ urlpatterns = [
     path('userdetails/', views.post_user_detail, name='post_user_detail'),
     path('userdetails/<userid>/<datatype>/',
          views.get_user_detail_datatype, name='get_user_detail_datatype'),
-    path('userdetails/<userid>/', views.put_user_detail, name='put_user_detail'),
+    path('userdetails/<userid>/', views.put_user_detail, name='get_put_user_detail'),
     path('userdetails_basic/<userid>/',
          views.get_user_detail_basic, name='get_user_detail_basic'),
     path('fanclubs/', views.fanclub_list,

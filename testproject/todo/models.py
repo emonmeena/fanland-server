@@ -58,6 +58,7 @@ class User_detail(models.Model):
     user_name = models.CharField(max_length=30)
     user_profile_image = models.ImageField(
         upload_to='users_media', default='users_media/red_profile_pic.png', blank=True)
+    user_status = models.CharField(max_length=100, default='A big lust with movies' ,blank=True)    
     following_clubs = models.ManyToManyField(
         Fanclub, blank=True, related_name='following_clubs')
     admin_clubs = models.ManyToManyField(
