@@ -149,6 +149,7 @@ def fanclub_basic(request, clubid):
 
 @api_view(['GET', 'POST'])
 def fanclub_chat_list(request, chatroomid):
+    parser_classes = (MultiPartParser, FormParser)
     if request.method == 'GET':
         data = Chat.objects.filter(chatroom_id=chatroomid)
         serializisedData = ChatSerializer(
@@ -159,5 +160,5 @@ def fanclub_chat_list(request, chatroomid):
         serializisedData = ChatSerializer(data=request.data)
         if serializisedData.is_valid():
             serializisedData.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializisedData.data['media'])
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
