@@ -4,9 +4,12 @@ from datetime import datetime
 
 
 class User(models.Model):
-    user_name = models.CharField(max_length=30)
+    user_name = models.CharField(max_length=30, unique=True)
     user_password = models.CharField(max_length=30)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ['user_name']
 
     def __str__(self):
         self.user_password
@@ -14,12 +17,12 @@ class User(models.Model):
 
 
 class Fanclub(models.Model):
-    name = models.CharField(max_length=30)
-    des = models.TextField()
+    name = models.CharField(max_length=30, blank=True)
+    des = models.TextField(blank=True)
     image = models.ImageField(
         upload_to='fanclub_media', default='fanclub_media/defaultfanclub.jpg', blank=True)
     creator = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='creator')
+        User, on_delete=models.CASCADE, related_name='creator', blank=True)
     top_fans = models.ManyToManyField(
         User, blank=True, related_name='top_fans')
     members = models.ManyToManyField(
@@ -34,9 +37,10 @@ class Fanclub(models.Model):
 
 
 class Chat(models.Model):
-    chatroom_id = models.ForeignKey(Fanclub, on_delete=models.CASCADE)
-    author_image = models.CharField(max_length=1000)
-    author_name = models.CharField(max_length=30)
+    chatroom_id = models.ForeignKey(Fanclub, on_delete=models.CASCADE, blank=True)
+    author_image = models.CharField(max_length=1000, blank=True)
+    author_name = models.CharField(max_length=30, blank=True)
+    author_id = models.ForeignKey(User, on_delete=models.CASCADE)
     is_image_message = models.BooleanField(default=False, blank=True)
     message = models.TextField(blank=True)
     media = models.ImageField(upload_to='chats_media', blank=True)
@@ -51,9 +55,12 @@ class Chat(models.Model):
 
 
 class User_detail(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    user_name = models.CharField(max_length=30, blank=True)
     user_profile_image = models.ImageField(
-        upload_to='users_media', default='users_media/defaultuser.jpg', blank=True)
+        upload_to='users_media', default='users_media/red_profile_pic.png', blank=True)
+    user_status = models.CharField(
+        max_length=100, default='A big lust with movies', blank=True)
     following_clubs = models.ManyToManyField(
         Fanclub, blank=True, related_name='following_clubs')
     admin_clubs = models.ManyToManyField(

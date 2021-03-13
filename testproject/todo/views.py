@@ -7,53 +7,92 @@ from .models import *
 from .serializers import *
 
 
-@api_view(['GET', 'POST'])
-def user_list(request):
+@api_view(['GET', 'PUT', 'DELETE'])
+def user(request, username, userpassword):
     if request.method == 'GET':
-        data = User.objects.all()
-        serializisedData = UserSerializer(
-            data, context={'request': request}, many=True)
+        try:
+            user = User.objects.get(
+                user_name=username, user_password=userpassword)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializisedData = UserSerializer(user, context={'request': request})
         return Response(serializisedData.data)
 
-    elif request.method == 'POST':
-        serializisedData = UserSerializer(data=request.data)
-        if serializisedData.is_valid():
-            serializisedData.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def post_user(request):
+    if request.method == 'POST':
+        serializised_user = UserSerializer(data=request.data)
+        if serializised_user.is_valid():
+            serializised_user.save()
+            return Response(serializised_user.data['id'])
+        return Response(serializised_user.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def user_details(request, username):
+@api_view(['GET'])
+def get_user_detail_basic(request, userid):
     try:
-        user = User.objects.get(user_name=username)
-    except User.DoesNotExist:
+        user_detail_data = User_detail.objects.get(user_id=userid)
+    except User_detail.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        user_data = User_detail.objects.get(user_id=user.id)
-        serializisedData = UserDetailsSerializer(user_data)
+        serializisedData = BasicUserDetailSerializer(
+            user_detail_data, context={'request': request})
         return Response(serializisedData.data)
 
+
+@api_view(['GET'])
+def get_user_detail_datatype(request, userid, datatype):
+    try:
+        user_detail_data = User_detail.objects.get(
+            user_id=userid)
+        print(user_detail_data)
+    except User_detail.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializisedData = UserDetailSerializer(
+            user_detail_data, context={'request': request})
+        return Response(serializisedData.data[datatype])
+
+
+@api_view(['GET', 'PUT'])
+def put_user_detail(request, userid):
+    try:
+        user_detail_data = User_detail.objects.get(user_id=userid)
+    except User_detail.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializedData = UserDetailSerializer(user_detail_data)
+        return Response(serializedData.data)
+
     elif request.method == 'PUT':
-        serializer = UserSerializer(
-            user, data=request.data, context={'request': request})
+        serializer = UserDetailSerializer(
+            user_detail_data, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def post_user_detail(request):
+    if request.method == 'POST':
+        serialised_user_detail = UserDetailSerializer(data=request.data)
+        if serialised_user_detail.is_valid():
+            serialised_user_detail.save()
+            return Response(status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET', 'POST'])
 def fanclub_list(request):
     if request.method == 'GET':
         data = Fanclub.objects.all()
-        serializisedData = FanclubSerializer(
-            data, context={'request': request}, many=True)
+        serializisedData = BasicFanclubSerializer(
+            data, many=True)
         return Response(serializisedData.data)
 
     elif request.method == 'POST':
@@ -65,9 +104,9 @@ def fanclub_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def fanclub_details(request, club_id):
+def fanclub(request, clubid):
     try:
-        fanclub = Fanclub.objects.get(id=club_id)
+        fanclub = Fanclub.objects.get(id=clubid)
     except Fanclub.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -88,20 +127,38 @@ def fanclub_details(request, club_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['GET'])
+def fanclub_basic_creator(request, creator):
+    if request.method == 'GET':
+        fanclub = Fanclub.objects.filter(creator=creator)
+        serializisedData = BasicFanclubSerializer(fanclub, many=True)
+        return Response(serializisedData.data)
+
+
+@api_view(['GET'])
+def fanclub_basic(request, clubid):
+    try:
+        fanclub = Fanclub.objects.get(id=clubid)
+    except Fanclub.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializisedData = BasicFanclubSerializer(fanclub)
+        return Response(serializisedData.data)
+
 
 @api_view(['GET', 'POST'])
-def chat_list(request, chatroom_id):
+def fanclub_chat_list(request, chatroomid):
+    parser_classes = (MultiPartParser, FormParser)
     if request.method == 'GET':
-        data = Chat.objects.filter(chatroom_id=chatroom_id)
+        data = Chat.objects.filter(chatroom_id=chatroomid)
         serializisedData = ChatSerializer(
-            data, context={'request': request}, many=True)
+            data, many=True)
         return Response(serializisedData.data)
 
     elif request.method == 'POST':
         serializisedData = ChatSerializer(data=request.data)
         if serializisedData.is_valid():
             serializisedData.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializisedData.data['media'])
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    
