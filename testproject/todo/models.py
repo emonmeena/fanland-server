@@ -20,7 +20,7 @@ class Fanclub(models.Model):
     name = models.CharField(max_length=30, blank=True)
     des = models.TextField(blank=True)
     image = models.ImageField(
-        upload_to='fanclub_media', default='fanclub_media/defaultfanclub.jpg', blank=True)
+        upload_to='fanclub_media', default='fanclub_media/Film_Review_Dark_Knight_Rises-085d2-4549.jpg', blank=True)
     creator = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='creator', blank=True)
     top_fans = models.ManyToManyField(
@@ -37,7 +37,8 @@ class Fanclub(models.Model):
 
 
 class Chat(models.Model):
-    chatroom_id = models.ForeignKey(Fanclub, on_delete=models.CASCADE, blank=True)
+    chatroom_id = models.ForeignKey(
+        Fanclub, on_delete=models.CASCADE, blank=True)
     author_image = models.CharField(max_length=1000, blank=True)
     author_name = models.CharField(max_length=30, blank=True)
     author_id = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -67,3 +68,5 @@ class User_detail(models.Model):
         Fanclub, blank=True, related_name='admin_clubs')
     liked_clubs = models.ManyToManyField(
         Fanclub, blank=True, related_name='liked_clubs')
+    recent_clubs = models.ManyToManyField(
+        Fanclub, blank=True, related_name='recent_clubs')
