@@ -99,12 +99,13 @@ def fanclub_list(request):
         serializisedData = FanclubSerializer(data=request.data)
         if serializisedData.is_valid():
             serializisedData.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializisedData.data['id'])
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def fanclub(request, clubid):
+    parser_classes = (MultiPartParser, FormParser)
     try:
         fanclub = Fanclub.objects.get(id=clubid)
     except Fanclub.DoesNotExist:
@@ -151,7 +152,7 @@ def fanclub_basic(request, clubid):
 def fanclub_chat_list(request, chatroomid):
     parser_classes = (MultiPartParser, FormParser)
     if request.method == 'GET':
-        data = Chat.objects.filter(chatroom_id=chatroomid)
+        data = Chat.objects.filter(chatroom_id=chatroomid).order_by('date')
         serializisedData = ChatSerializer(
             data, many=True)
         return Response(serializisedData.data)
@@ -162,3 +163,14 @@ def fanclub_chat_list(request, chatroomid):
             serializisedData.save()
             return Response(serializisedData.data['media'])
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT', 'DELETE'])
+def chat_details(request, chatid):
+    try:
+        chat = Chat.objects.get(id=chatid)
+    except Chat.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'DELETE':
+        chat.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
