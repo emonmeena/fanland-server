@@ -13,6 +13,8 @@ urlpatterns = [
          name='get_put_user_detail'),
     path('userdetails_basic/<userid>/',
          views.get_user_detail_basic, name='get_user_detail_basic'),
+    path('modify_userdetails/<userid>/',
+         views.modify_user_detail, name='modify_user_detail'),
     path('fanclubs/', views.fanclub_list,
          name='get_all_fanclub_basic_post_fanclub'),
     path('fanclubs/<clubid>/', views.fanclub,

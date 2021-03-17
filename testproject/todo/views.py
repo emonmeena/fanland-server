@@ -69,12 +69,29 @@ def put_user_detail(request, userid):
         return Response(serializedData.data)
 
     elif request.method == 'PUT':
+        print(request.data)
         serializer = UserDetailSerializer(
             user_detail_data, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT'])
+def modify_user_detail(request, userid):
+    try:
+        user_detail_data = User_detail.objects.get(user_id=userid)
+    except User_detail.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        print(request.data)
+        serializer = ModifyUserDetails(
+            user_detail_data, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
 
 
 @api_view(['POST'])
