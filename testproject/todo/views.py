@@ -173,3 +173,22 @@ def chat_details(request, chatid):
     if request.method == 'DELETE':
         chat.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def get_fan(request, fanclubid):
+    if request.method == 'GET':
+        data = Fan.objects.filter(fanclub_id=fanclubid)[:5]
+        serializisedData = GetFanSerializer(
+            data, many=True)
+        return Response(serializisedData.data)
+
+
+@api_view(['GET'])
+def post_fan(request):
+    if request.method == 'POST':
+        serializisedData = FanSerializer(data=request.data)
+        if serializisedData.is_valid():
+            serializisedData.save()
+            return Response(serializisedData.data)
+        return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)

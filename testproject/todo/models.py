@@ -23,8 +23,8 @@ class Fanclub(models.Model):
         upload_to='fanclub_media', default='fanclub_media/Film_Review_Dark_Knight_Rises-085d2-4549.jpg', blank=True)
     creator = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='creator', blank=True)
-    top_fans = models.ManyToManyField(
-        User, blank=True, related_name='top_fans')
+    # top_fans = models.ManyToManyField(
+    #     User, blank=True, related_name='top_fans')
     members = models.ManyToManyField(
         User, blank=True, related_name='members')
     admin_members = models.ManyToManyField(
@@ -70,3 +70,13 @@ class User_detail(models.Model):
         Fanclub, blank=True, related_name='liked_clubs')
     recent_clubs = models.ManyToManyField(
         Fanclub, blank=True, related_name='recent_clubs')
+
+
+class Fan(models.Model):
+    fan_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    fanclub_id = models.ForeignKey(
+        Fanclub, on_delete=models.CASCADE, blank=True)
+    activity_count = models.IntegerField(default=0, blank=True)
+
+    class Meta:
+        ordering = ['-activity_count']

@@ -42,3 +42,15 @@ class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = '__all__'
+
+
+class FanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fan
+        fields = "__all__"
+
+
+class GetFanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fan
+        fields = ('fan_id',)

@@ -24,5 +24,9 @@ urlpatterns = [
     path('chats/<chatroomid>/', views.fanclub_chat_list,
          name='get_fanclub_chat_list'),
     path('chat/<chatid>/', views.chat_details,
-         name='chat_details')
+         name='chat_details'),
+    path('fans/<fanclubid>', views.get_fan,
+         name='get_fan'),
+    path('fans/', views.post_fan,
+         name='post_fan')
 ]
