@@ -48,7 +48,6 @@ def get_user_detail_datatype(request, userid, datatype):
     try:
         user_detail_data = User_detail.objects.get(
             user_id=userid)
-        print(user_detail_data)
     except User_detail.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -116,7 +115,7 @@ def fanclub(request, clubid):
         return Response(serializisedData.data)
 
     elif request.method == 'PUT':
-        serializer = FanclubSerializer(
+        serializer = BasicFanclubSerializer(
             fanclub, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -152,7 +151,7 @@ def fanclub_basic(request, clubid):
 def fanclub_chat_list(request, chatroomid):
     parser_classes = (MultiPartParser, FormParser)
     if request.method == 'GET':
-        data = Chat.objects.filter(chatroom_id=chatroomid).order_by('date')
+        data = Chat.objects.filter(chatroom_id=chatroomid).order_by('id')
         serializisedData = ChatSerializer(
             data, many=True)
         return Response(serializisedData.data)
@@ -161,7 +160,7 @@ def fanclub_chat_list(request, chatroomid):
         serializisedData = ChatSerializer(data=request.data)
         if serializisedData.is_valid():
             serializisedData.save()
-            return Response(serializisedData.data['media'])
+            return Response(serializisedData.data)
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

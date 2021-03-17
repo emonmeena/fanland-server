@@ -26,6 +26,12 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ModifyUserDetails(serializers.ModelSerializer):
+    class Meta:
+        model = User_detail
+        fields = ('user_status', 'user_profile_image')
+
+
 class BasicUserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_detail
