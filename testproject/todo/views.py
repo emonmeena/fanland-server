@@ -115,7 +115,7 @@ def fanclub(request, clubid):
         return Response(serializisedData.data)
 
     elif request.method == 'PUT':
-        serializer = BasicFanclubSerializer(
+        serializer = FanclubSerializer(
             fanclub, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -157,9 +157,23 @@ def fanclub_chat_list(request, chatroomid):
         return Response(serializisedData.data)
 
     elif request.method == 'POST':
+        fanid = request.data['author_id']
+        fanclubid = request.data['chatroom_id']
+        print(fanid, fanclubid)
+        try:
+            fan = Fan.objects.get(fan_id=fanid, fanclub_id=fanclubid)
+            fan.activity_count += 1
+            fan.save()
+        except:
+            user = User.objects.get(id=fanid)
+            fanclub = Fanclub.objects.get(id=fanclubid)
+            fan = Fan(fan_id=user, fanclub_id=fanclub)
+            fan.save()
+
         serializisedData = ChatSerializer(data=request.data)
         if serializisedData.is_valid():
             serializisedData.save()
+
             return Response(serializisedData.data)
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
 
