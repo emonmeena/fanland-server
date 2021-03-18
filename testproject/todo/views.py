@@ -85,7 +85,6 @@ def modify_user_detail(request, userid):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'PUT':
-        print(request.data)
         serializer = ModifyUserDetails(
             user_detail_data, data=request.data, context={'request': request})
         if serializer.is_valid():
