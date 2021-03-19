@@ -47,7 +47,7 @@ class ChatSerializer(serializers.ModelSerializer):
 class FanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fan
-        fields = "__all__"
+        fields = ('last_active_date','last_active_time')
 
 
 class GetFanSerializer(serializers.ModelSerializer):

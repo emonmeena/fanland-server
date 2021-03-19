@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from datetime import datetime
+from django.utils import timezone
 
 
 class User(models.Model):
@@ -77,6 +78,8 @@ class Fan(models.Model):
     fanclub_id = models.ForeignKey(
         Fanclub, on_delete=models.CASCADE, blank=True)
     activity_count = models.IntegerField(default=0, blank=True)
+    last_active_date = models.DateField(default=timezone.now, blank=True)
+    last_active_time = models.TimeField(default=timezone.now, blank=True)
 
     class Meta:
         ordering = ['-activity_count']

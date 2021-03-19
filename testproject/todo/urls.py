@@ -29,6 +29,6 @@ urlpatterns = [
          name='chat_details'),
     path('fans/<fanclubid>', views.get_fan,
          name='get_fan'),
-    path('fans/', views.post_fan,
+    path('fans/last_active/<fanid>/<fanclubid>/', views.get_fan_last_active,
          name='post_fan')
 ]
