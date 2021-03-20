@@ -19,6 +19,8 @@ urlpatterns = [
          name='get_all_fanclub_basic_post_fanclub'),
     path('fanclubs/<clubid>/', views.fanclub,
          name='get_put_delete_single_fanclub'),
+    path('modify_fanclub/<clubid>/', views.modify_fanclub,
+         name='odify_fanclub'),
     path('fanclubs_basic/created_by/<creator>', views.fanclub_basic_creator,
          name='get_single_fanclub_basic_creator'),
     path('fanclubs_basic/<clubid>/', views.fanclub_basic,
