@@ -77,7 +77,7 @@ def put_user_detail(request, userid):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['PUT'])
 def modify_user_detail(request, userid):
     try:
         user_detail_data = User_detail.objects.get(user_id=userid)
@@ -141,6 +141,21 @@ def fanclub(request, clubid):
     elif request.method == 'DELETE':
         fanclub.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['PUT'])
+def modify_fanclub(request, clubid):
+    try:
+        fanclub = Fanclub.objects.get(id=clubid)
+    except Fanclub.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        serializer = BasicFanclubSerializer(
+            fanclub, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
