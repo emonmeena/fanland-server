@@ -26,6 +26,12 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ModifyUserDetails(serializers.ModelSerializer):
+    class Meta:
+        model = User_detail
+        fields = ('user_status', 'user_profile_image')
+
+
 class BasicUserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_detail
@@ -36,3 +42,15 @@ class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = '__all__'
+
+
+class FanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fan
+        fields = ('last_active_date','last_active_time')
+
+
+class GetFanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fan
+        fields = ('fan_id',)

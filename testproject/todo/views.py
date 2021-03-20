@@ -48,7 +48,6 @@ def get_user_detail_datatype(request, userid, datatype):
     try:
         user_detail_data = User_detail.objects.get(
             user_id=userid)
-        print(user_detail_data)
     except User_detail.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -71,6 +70,22 @@ def put_user_detail(request, userid):
 
     elif request.method == 'PUT':
         serializer = UserDetailSerializer(
+            user_detail_data, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT'])
+def modify_user_detail(request, userid):
+    try:
+        user_detail_data = User_detail.objects.get(user_id=userid)
+    except User_detail.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        serializer = ModifyUserDetails(
             user_detail_data, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -152,16 +167,29 @@ def fanclub_basic(request, clubid):
 def fanclub_chat_list(request, chatroomid):
     parser_classes = (MultiPartParser, FormParser)
     if request.method == 'GET':
-        data = Chat.objects.filter(chatroom_id=chatroomid).order_by('date')
+        data = Chat.objects.filter(chatroom_id=chatroomid).order_by('id')
         serializisedData = ChatSerializer(
             data, many=True)
         return Response(serializisedData.data)
 
     elif request.method == 'POST':
+        fanid = request.data['author_id']
+        fanclubid = request.data['chatroom_id']
+        try:
+            fan = Fan.objects.get(fan_id=fanid, fanclub_id=fanclubid)
+            fan.activity_count += 1
+            fan.save()
+        except:
+            user = User.objects.get(id=fanid)
+            fanclub = Fanclub.objects.get(id=fanclubid)
+            fan = Fan(fan_id=user, fanclub_id=fanclub)
+            fan.save()
+
         serializisedData = ChatSerializer(data=request.data)
         if serializisedData.is_valid():
             serializisedData.save()
-            return Response(serializisedData.data['media'])
+
+            return Response(serializisedData.data)
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -174,3 +202,39 @@ def chat_details(request, chatid):
     if request.method == 'DELETE':
         chat.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def get_fan(request, fanclubid):
+    if request.method == 'GET':
+        data = Fan.objects.filter(fanclub_id=fanclubid)[:5]
+        serializisedData = GetFanSerializer(
+            data, many=True)
+        return Response(serializisedData.data)
+
+
+@api_view(['GET', 'PUT'])
+def get_fan_last_active(request, fanid, fanclubid):
+    try:
+        fan = Fan.objects.get(fan_id=fanid, fanclub_id=fanclubid)
+    except:
+        try:
+            user = User.objects.get(id=fanid)
+            fanclub = Fanclub.objects.get(id=fanclubid)
+            fan = Fan(fan_id=user, fanclub_id=fanclub)
+            fan.save()
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializisedData = FanSerializer(fan)
+        return Response(serializisedData.data)
+
+    if request.method == 'PUT':
+        try:
+            fan.last_active_date = timezone.localdate()
+            fan.last_active_time = timezone.localtime()
+            fan.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Fan.DoesNotExist:
+            print("Something went wrong.")
+            return Response(status=status.HTTP_400_BAD_REQUEST)

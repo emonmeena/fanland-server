@@ -13,6 +13,8 @@ urlpatterns = [
          name='get_put_user_detail'),
     path('userdetails_basic/<userid>/',
          views.get_user_detail_basic, name='get_user_detail_basic'),
+    path('modify_userdetails/<userid>/',
+         views.modify_user_detail, name='modify_user_detail'),
     path('fanclubs/', views.fanclub_list,
          name='get_all_fanclub_basic_post_fanclub'),
     path('fanclubs/<clubid>/', views.fanclub,
@@ -24,5 +26,9 @@ urlpatterns = [
     path('chats/<chatroomid>/', views.fanclub_chat_list,
          name='get_fanclub_chat_list'),
     path('chat/<chatid>/', views.chat_details,
-         name='chat_details')
+         name='chat_details'),
+    path('fans/<fanclubid>', views.get_fan,
+         name='get_fan'),
+    path('fans/last_active/<fanid>/<fanclubid>/', views.get_fan_last_active,
+         name='post_fan')
 ]
