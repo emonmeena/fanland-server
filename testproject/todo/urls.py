@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('users/', views.post_user, name='post_user'),
+    path('users/<username>', views.search_user, name='search_user'),
     path('users/<username>/<userpassword>', views.user,
          name='get_put_delete_single_user'),
     path('userdetails/', views.post_user_detail, name='post_user_detail'),
@@ -17,6 +18,8 @@ urlpatterns = [
          views.modify_user_detail, name='modify_user_detail'),
     path('fanclubs/', views.fanclub_list,
          name='get_all_fanclub_basic_post_fanclub'),
+    path('fanclubs/<clubname>', views.search_fanclub,
+         name='search_fanclub'),
     path('fanclubs/<clubid>/', views.fanclub,
          name='get_put_delete_single_fanclub'),
     path('modify_fanclub/<clubid>/', views.modify_fanclub,

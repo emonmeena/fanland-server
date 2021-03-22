@@ -118,6 +118,24 @@ def fanclub_list(request):
         return Response(serializisedData.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+def search_user(request, username):
+    if request.method == 'GET':
+        data = User.objects.get(user_name=username)
+        serializisedData = UserSearch(
+            data)
+        return Response(serializisedData.data)
+
+
+@api_view(['GET'])
+def search_fanclub(request, clubname):
+    if request.method == 'GET':
+        data = Fanclub.objects.get(name=clubname)
+        serializisedData = BasicFanclubSerializer(
+            data)
+        return Response(serializisedData.data)
+
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def fanclub(request, clubid):
     parser_classes = (MultiPartParser, FormParser)
@@ -141,6 +159,7 @@ def fanclub(request, clubid):
     elif request.method == 'DELETE':
         fanclub.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['PUT'])
 def modify_fanclub(request, clubid):

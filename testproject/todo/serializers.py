@@ -7,6 +7,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+class UserSearch(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'user_name')
 
 class FanclubSerializer(serializers.ModelSerializer):
     class Meta:
